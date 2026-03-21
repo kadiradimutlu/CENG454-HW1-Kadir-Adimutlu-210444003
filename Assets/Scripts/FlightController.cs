@@ -15,11 +15,18 @@ public class FlightController : MonoBehaviour
 
     void Start()
     {
+        // Cache the Rigidbody component for performance
         rb = GetComponent<Rigidbody>();
 
         if (rb != null)
         {
+            // Lock physics rotation to prevent the engine from fighting our custom flight logic
             rb.freezeRotation = true;
+            Debug.Log("FlightController: Physics initialized and rotation locked.");
+        }
+        else
+        {
+            Debug.LogError("FlightController: Rigidbody missing on the aircraft!");
         }
     }
 
@@ -31,27 +38,33 @@ public class FlightController : MonoBehaviour
 
     private void HandleRotation()
     {
-        // Pitch: Arrow Up/Down
+        // 1. Pitch: Vertical axis for nose up/down
         float pitchInput = Input.GetAxis("Vertical");
-        transform.Rotate(Vector3.right * pitchInput * pitchSpeed * Time.deltaTime);
+        float pitchAmount = pitchInput * pitchSpeed * Time.deltaTime;
+        transform.Rotate(Vector3.right, pitchAmount);
 
-        // Yaw: Arrow Left/Right
+        // 2. Yaw: Horizontal axis for steering left/right
         float yawInput = Input.GetAxis("Horizontal");
-        transform.Rotate(Vector3.up * yawInput * yawSpeed * Time.deltaTime);
+        float yawAmount = yawInput * yawSpeed * Time.deltaTime;
+        transform.Rotate(Vector3.up, yawAmount);
 
-        // Roll: Q/E Keys
+        // 3. Roll: Q and E keys for banking
         float rollInput = 0f;
         if (Input.GetKey(KeyCode.Q)) rollInput = 1f;
         else if (Input.GetKey(KeyCode.E)) rollInput = -1f;
-        transform.Rotate(Vector3.forward * rollInput * rollSpeed * Time.deltaTime);
+
+        float rollAmount = rollInput * rollSpeed * Time.deltaTime;
+        transform.Rotate(Vector3.forward, rollAmount);
     }
 
     private void HandleThrust()
     {
-        // Thrust: Spacebar
+        // Thrust control via Spacebar
         if (Input.GetKey(KeyCode.Space))
         {
-            transform.Translate(Vector3.forward * thrustSpeed * Time.deltaTime);
+            // Move forward along the local Z axis
+            float thrustAmount = thrustSpeed * Time.deltaTime;
+            transform.Translate(Vector3.forward * thrustAmount);
         }
     }
 }
