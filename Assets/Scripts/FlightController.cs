@@ -15,14 +15,21 @@ public class FlightController : MonoBehaviour
 
     void Start()
     {
+        // Cache the Rigidbody component for performance
         rb = GetComponent<Rigidbody>();
 
         if (rb != null)
         {
+            // Lock physics rotation to prevent the engine from fighting our custom flight logic
             rb.freezeRotation = true;
+            Debug.Log("FlightController: Physics initialized and rotation locked.");
+        }
+        else
+        {
+            Debug.LogError("FlightController: Rigidbody missing on the aircraft!");
         }
     }
-
+    
     void Update()
     {
         HandleRotation();
