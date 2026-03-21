@@ -59,10 +59,12 @@ public class FlightController : MonoBehaviour
 
     private void HandleThrust()
     {
-        // Thrust: Spacebar
+        // Thrust control via Spacebar
         if (Input.GetKey(KeyCode.Space))
         {
-            transform.Translate(Vector3.forward * thrustSpeed * Time.deltaTime);
+            // Move forward along the local Z axis
+            float thrustAmount = thrustSpeed * Time.deltaTime;
+            transform.Translate(Vector3.forward * thrustAmount);
         }
     }
 }
