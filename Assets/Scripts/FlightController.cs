@@ -29,7 +29,7 @@ public class FlightController : MonoBehaviour
             Debug.LogError("FlightController: Rigidbody missing on the aircraft!");
         }
     }
-    
+
     void Update()
     {
         HandleRotation();
@@ -38,19 +38,23 @@ public class FlightController : MonoBehaviour
 
     private void HandleRotation()
     {
-        // Pitch: Arrow Up/Down
+        // 1. Pitch: Vertical axis for nose up/down
         float pitchInput = Input.GetAxis("Vertical");
-        transform.Rotate(Vector3.right * pitchInput * pitchSpeed * Time.deltaTime);
+        float pitchAmount = pitchInput * pitchSpeed * Time.deltaTime;
+        transform.Rotate(Vector3.right, pitchAmount);
 
-        // Yaw: Arrow Left/Right
+        // 2. Yaw: Horizontal axis for steering left/right
         float yawInput = Input.GetAxis("Horizontal");
-        transform.Rotate(Vector3.up * yawInput * yawSpeed * Time.deltaTime);
+        float yawAmount = yawInput * yawSpeed * Time.deltaTime;
+        transform.Rotate(Vector3.up, yawAmount);
 
-        // Roll: Q/E Keys
+        // 3. Roll: Q and E keys for banking
         float rollInput = 0f;
         if (Input.GetKey(KeyCode.Q)) rollInput = 1f;
         else if (Input.GetKey(KeyCode.E)) rollInput = -1f;
-        transform.Rotate(Vector3.forward * rollInput * rollSpeed * Time.deltaTime);
+
+        float rollAmount = rollInput * rollSpeed * Time.deltaTime;
+        transform.Rotate(Vector3.forward, rollAmount);
     }
 
     private void HandleThrust()
